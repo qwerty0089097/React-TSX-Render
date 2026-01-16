@@ -12,13 +12,12 @@ function App() {
 
   useEffect(() => {
     Promise.all([
-      axios.get("https://python-example-8i2y.onrender.com/users"),
-      axios.get("https://python-example-8i2y.onrender.com/question/1"),
+      axios.get("https://python-example-8i2y.onrender.com/users")
     ])
-      .then(([usersRes, questionRes]) => {
+      .then((usersRes) => {
         setUsers(usersRes.data);
-        setQuestion(questionRes.data);
         setMessage("Data loaded successfully ✅");
+        console.log(usersRes.data);
       })
       .catch((err) => {
         console.error(err);
@@ -50,10 +49,6 @@ function App() {
           <li key={i}>{u.name} ({u.email})</li>
         ))}
       </ul>
-
-      {/* Question */}
-      <h3>Question</h3>
-      {question && <pre>{JSON.stringify(question, null, 2)}</pre>}
 
       <div className="card">
         <button onClick={() => setCount((c) => c + 1)}>
