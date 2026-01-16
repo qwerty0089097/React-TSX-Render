@@ -7,17 +7,22 @@ import axios from "axios";
 function App() {
   const [count, setCount] = useState(0);
   const [message, setMessage] = useState<string>("Loading...");
+  const [users, setUsers] = useState<any[]>([]);
+  const [question, setQuestion] = useState<any>(null);
 
   useEffect(() => {
-    axios
-      .get("https://python-example-8i2y.onrender.com/")
-      .then((res) => {
-        setMessage(res.data.message);
-        console.log(res.data);
+    Promise.all([
+      axios.get("https://python-example-8i2y.onrender.com/users"),
+      axios.get("https://python-example-8i2y.onrender.com/question/1"),
+    ])
+      .then(([usersRes, questionRes]) => {
+        setUsers(usersRes.data);
+        setQuestion(questionRes.data);
+        setMessage("Data loaded successfully ✅");
       })
       .catch((err) => {
         console.error(err);
-        setMessage("Failed to load message from backend");
+        setMessage("Failed to load data ❌");
       });
   }, []);
 
@@ -34,23 +39,27 @@ function App() {
 
       <h1>Vite + React</h1>
 
-      {/* 🔽 Message from FastAPI */}
       <h2 style={{ color: "#38bdf8", marginTop: "20px" }}>
         {message}
       </h2>
 
+      {/* Users */}
+      <h3>Users</h3>
+      <ul>
+        {users.map((u, i) => (
+          <li key={i}>{u.name} ({u.email})</li>
+        ))}
+      </ul>
+
+      {/* Question */}
+      <h3>Question</h3>
+      {question && <pre>{JSON.stringify(question, null, 2)}</pre>}
+
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
+        <button onClick={() => setCount((c) => c + 1)}>
           count is {count}
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
       </div>
-
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   );
 }
